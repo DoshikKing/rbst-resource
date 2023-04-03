@@ -1,7 +1,7 @@
 HELP.md
-.application.log
-.mvnw
-.mvnw.cmd
+application.log
+mvnw
+mvnw.cmd
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
