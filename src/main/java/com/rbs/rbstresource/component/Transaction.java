@@ -27,6 +27,9 @@ public class Transaction {
     @Column(name = "transaction_time", nullable = false)
     private Date transactionTime;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
     @Column(name = "transaction_group", nullable = false)
     private String transactionGroup;
 

@@ -9,5 +9,5 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Card findByCode(String code);
     @Modifying
     @Query("update Card u set u.balance = ?1  where u.id = ?2")
-    void setCardInfoById(float balance, Long id);
+    void setCardBalanceById(float balance, Long id);
 }

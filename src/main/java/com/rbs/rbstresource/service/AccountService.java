@@ -4,43 +4,41 @@ import com.rbs.rbstresource.component.Account;
 import com.rbs.rbstresource.service.ORMRepository.AccountRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-@Component
 @Transactional
 public class AccountService {
-    AccountRepository accountRepo;
+    private final AccountRepository accountRepo;
 
     @Autowired
     public AccountService(AccountRepository accountRepo){
         this.accountRepo = accountRepo;
     }
 
-    public void addAccount(Account account) {
+    public void createAccount(Account account) {
         log.info("Added new account {}", account);
         accountRepo.save(account);
     }
 
-    public Account findByAccountName(String name) {
+    public Account findAccountByAccountName(String name) {
         log.info("Found account with name {}", name);
         return accountRepo.findByAccountName(name);
     }
 
-    public Account findByAccountNumber(String number) {
+    public Account findAccountByAccountNumber(String number) {
         log.info("Found account with number {}", number);
         return accountRepo.findByAccountNumber(number);
     }
 
-    public Account findByClientId(Long id) {
+    public Account findAccountByClientId(Long id) {
         log.info("Found account with client id {}", id);
         return accountRepo.findByClientId(id);
     }
 
-    public Account findById(Long id) {
+    public Account findAccountById(Long id) {
         log.info("Found account with id {}", id);
         return accountRepo.getReferenceById(id);
     }
@@ -63,7 +61,7 @@ public class AccountService {
         accountRepo.deleteAll();
     }
 
-    public void updateById(float balance, Long id) {
+    public void updateAccountById(float balance, Long id) {
         accountRepo.setAccountInfoById(balance, id);
     }
 }

@@ -4,17 +4,14 @@ import com.rbs.rbstresource.component.Client;
 import com.rbs.rbstresource.service.ORMRepository.ClientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-@Component
 @Transactional
 public class ClientService {
-
-    ClientRepository clientRepo;
+    private final ClientRepository clientRepo;
 
     @Autowired
     public ClientService(ClientRepository clientRepo){

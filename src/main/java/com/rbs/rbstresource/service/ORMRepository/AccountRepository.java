@@ -11,5 +11,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findByClientId(Long id);
     @Modifying
     @Query("update Account u set u.balance = ?1  where u.id = ?2")
-    void setAccountInfoById(float summ, Long id);
+    void setAccountBalanceById(float summ, Long id);
 }

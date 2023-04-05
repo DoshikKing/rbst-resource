@@ -4,23 +4,21 @@ import com.rbs.rbstresource.component.Card;
 import com.rbs.rbstresource.service.ORMRepository.CardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-@Component
 @Transactional
 public class CardService {
-    CardRepository cardRepo;
+    private final CardRepository cardRepo;
 
     @Autowired
     public CardService(CardRepository cardRepo){
         this.cardRepo = cardRepo;
     }
 
-    public void addCard(Card bankCard) {
+    public void createCard(Card bankCard) {
         log.info("Added new bank card {}", bankCard);
         cardRepo.save(bankCard);
     }
@@ -53,7 +51,7 @@ public class CardService {
         cardRepo.deleteAll();
     }
 
-    public void updateById(float balance, Long id) {
+    public void updateCardById(float balance, Long id) {
         cardRepo.setCardInfoById(balance, id);
     }
 }
