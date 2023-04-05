@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -88,13 +87,6 @@ public class TransactionService {
         transactionDAO.save(transaction);
     }
 
-//    public void makeTransaction(Transaction debitTransaction, Transaction creditTransaction) {
-//        log.info("Added new debit transaction {}", debitTransaction);
-//        log.info("Added new credit transaction {}", creditTransaction);
-//        transactionsRepo.save(debitTransaction);
-//        transactionsRepo.save(creditTransaction);
-//    }
-
     public List<TransactionData> getCardTransactionsList(String code){
         return transactionDAO.findAll().stream()
                 .filter(a -> a.getCard() != null)
@@ -110,6 +102,13 @@ public class TransactionService {
                 .toList();
     }
 
+//    public void makeTransaction(Transaction debitTransaction, Transaction creditTransaction) {
+//        log.info("Added new debit transaction {}", debitTransaction);
+//        log.info("Added new credit transaction {}", creditTransaction);
+//        transactionsRepo.save(debitTransaction);
+//        transactionsRepo.save(creditTransaction);
+//    }
+//
 //    public Transaction getTransactionByAccountId(Long id) {
 //        log.info("Found transaction by related account id");
 //        return transactionDAO.findByAccountId(id);
