@@ -52,6 +52,6 @@ public class CardService {
     }
 
     public void updateCardById(float balance, Long id) {
-        cardRepo.setCardInfoById(balance, id);
+        cardRepo.setCardBalanceById(balance, id);
     }
 }

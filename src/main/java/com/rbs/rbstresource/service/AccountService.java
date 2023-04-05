@@ -62,6 +62,6 @@ public class AccountService {
     }
 
     public void updateAccountById(float balance, Long id) {
-        accountRepo.setAccountInfoById(balance, id);
+        accountRepo.setAccountBalanceById(balance, id);
     }
 }
