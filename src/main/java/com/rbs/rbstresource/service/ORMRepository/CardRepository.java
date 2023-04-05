@@ -5,7 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface CardRepository extends JpaRepository<Card, Long> {
+    List<Card> findAllByCode(String code);
     Card findByCode(String code);
     @Modifying
     @Query("update Card u set u.balance = ?1  where u.id = ?2")

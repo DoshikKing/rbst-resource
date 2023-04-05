@@ -7,11 +7,10 @@ import java.sql.Date;
 
 @Data
 @AllArgsConstructor
-public class CardData {
+public class AccountData {
 
     private Long id;
-    private String code;
-    private float amount;
+    private String accountNumber;
     private Date statusTime;
-    private String paySystem;
+    private float balance;
 }
