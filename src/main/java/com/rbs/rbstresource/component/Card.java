@@ -22,15 +22,19 @@ public class Card {
     @Column(name = "balance",nullable = false, precision = 2)
     private float balance;
 
-    @Column(name = "status_time", nullable = false)
-    private Date statusTime;
-
     @Column(name = "limit_per_day", nullable = false, precision = 2)
     private float limitPerDay;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tariff_id", nullable = false)
     public Tariff tariff;
+
+    @Column(name = "status_time", nullable = false)
+    private Date statusTime;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "status_id", nullable = false)
+    public Status status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false)

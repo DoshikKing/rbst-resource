@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import java.sql.Date;
@@ -34,7 +33,6 @@ public class TransactionService {
     }
 
     public void makeTransaction(String debit, String credit, float amount, String debitBank, String creditBank, String comment) throws SQLException {
-
         if(creditBank.equals("LOCAL") && debitBank.equals("LOCAL")){
             var from = accountDAO.findByAccountNumber(debit);
             if(credit.length() == 16){
@@ -43,16 +41,16 @@ public class TransactionService {
 
                 makeTransfer(from, to, null, toCard, amount, comment);
 
-                accountDAO.setAccountBalanceById(from.getBalance() - (amount), from.getId());
-                accountDAO.setAccountBalanceById(to.getBalance() + (amount), to.getId());
-                cardDAO.setCardBalanceById(toCard.getBalance() + (amount), toCard.getId());
+                accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
+                accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
+                cardDAO.updateCardSetBalanceForId(toCard.getBalance() + (amount), toCard.getId());
             } else {
                 var to = accountDAO.findByAccountNumber(credit);
 
                 makeTransfer(from, to, null, null, amount, comment);
 
-                accountDAO.setAccountBalanceById(from.getBalance() - (amount), from.getId());
-                accountDAO.setAccountBalanceById(to.getBalance() + (amount), to.getId());
+                accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
+                accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
             }
         }
     }
@@ -88,16 +86,13 @@ public class TransactionService {
     }
 
     public List<TransactionData> getCardTransactionsList(String code){
-        return transactionDAO.findAll().stream()
-                .filter(a -> a.getCard() != null)
-                .filter(a -> Objects.equals(a.getCard().getCode(), code))
+        return transactionDAO.findAllByCard(cardDAO.findByCode(code)).stream()
                 .map(a -> new TransactionData(String.valueOf(a.getAmount()), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getCard().getCode()))
                 .toList();
     }
 
     public List<TransactionData> getAccountTransactionsList(String code){
-        return transactionDAO.findAll().stream()
-                .filter(a -> Objects.equals(a.getAccount().getAccountNumber(), code))
+        return transactionDAO.findAllByAccount(accountDAO.findByAccountNumber(code)).stream()
                 .map(a -> new TransactionData(String.valueOf(a.getAmount()), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getAccount().getAccountNumber()))
                 .toList();
     }
