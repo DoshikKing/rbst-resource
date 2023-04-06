@@ -1,19 +1,14 @@
 package com.rbs.rbstresource.service.ORMRepository;
 
-import com.rbs.rbstresource.component.Account;
 import com.rbs.rbstresource.component.Card;
-import com.rbs.rbstresource.component.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
 
-    List<Card> findAllByAccount(Account account);
-    List<Card> findAllByCode(String code);
     Card findByCode(String code);
     @Modifying
     @Query(value = "update Card u set u.balance = :balance where u.id = :id")

@@ -18,8 +18,8 @@ public class Status implements Serializable {
     @Column(name = "status_name", nullable = false)
     private String statusName;
 
-//    @OneToMany(mappedBy = "status", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private List<Client> clients;
+    @OneToMany(mappedBy = "status", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Client> clients;
 
     @OneToMany(mappedBy = "status", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Account> accounts;

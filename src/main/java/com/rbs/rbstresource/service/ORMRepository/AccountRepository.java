@@ -11,9 +11,7 @@ import java.util.List;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    List<Account> findAllByUserId(Long id);
     Account findByAccountNumber(String account_number);
-    Account findByAccountName(String account_name);
     Account findByClientId(Long id);
     @Modifying
     @Query(value = "update Account u set u.balance = :balance where u.id = :id")

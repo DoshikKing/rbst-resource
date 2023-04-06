@@ -37,12 +37,9 @@ public class Account {
     @Column(name = "limit_per_day", precision = 2)
     private float limitPerDay;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "client_id", nullable = false)
-//    public Client client;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    public Client client;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tariff_id", nullable = false)
