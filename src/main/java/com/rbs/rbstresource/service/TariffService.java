@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @Transactional
+@Deprecated
 public class TariffService {
     private final TariffRepository tariffRepo;
 

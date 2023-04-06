@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @Transactional
+@Deprecated
 public class PaySystemService {
     private final PaySystemRepository paySystemRepo;
 
