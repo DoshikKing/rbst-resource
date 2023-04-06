@@ -25,22 +25,18 @@ public class AccountService {
 
     @Autowired
     public AccountService(AccountRepository accountDAO, StatusRepository statusDAO, ClientRepository clientDAO){
+        this.clientDAO = clientDAO;
         this.accountDAO = accountDAO;
         this.statusDAO = statusDAO;
-        this.clientDAO = clientDAO;
     }
 
     public List<AccountData> getAccountList(Long userId) throws SQLException {
         var client = clientDAO.findByUserId(userId);
-        var accounts = client.getAccounts();
+        var accounts = accountDAO.findAllByClient(client);
 
-        if(Objects.equals(client.getUserId(), userId)) {
-            return accounts.stream()
-                    .map(a -> new AccountData(a.getId(), a.getAccountNumber(), a.getStatus().getStatusName(), a.getBalance()))
-                    .toList();
-        } else {
-            return null;
-        }
+        return accounts.stream()
+                .map(a -> new AccountData(a.getId(), a.getAccountNumber(), a.getStatus().getStatusName(), a.getBalance()))
+                .toList();
     }
 
     public void updateAccountStatus(Long id, String statusName) throws SQLException {
