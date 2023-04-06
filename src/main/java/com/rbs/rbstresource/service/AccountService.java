@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,13 +31,16 @@ public class AccountService {
         this.statusDAO = statusDAO;
     }
 
-    public List<AccountData> getAccountList(Long userId) throws SQLException {
+    public List<AccountData> getAccountList(Long userId) {
         var client = clientDAO.findByUserId(userId);
-        var accounts = accountDAO.findAllByClient(client);
-
-        return accounts.stream()
-                .map(a -> new AccountData(a.getId(), a.getAccountNumber(), a.getStatus().getStatusName(), a.getBalance()))
-                .toList();
+        var accounts = client.getAccounts();
+        if(accounts != null) {
+            return accounts.stream()
+                    .map(a -> new AccountData(a.getId(), a.getAccountNumber(), a.getStatus().getStatusName(), a.getBalance()))
+                    .toList();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public void updateAccountStatus(Long id, String statusName) throws SQLException {

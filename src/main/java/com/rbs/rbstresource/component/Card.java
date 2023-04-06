@@ -40,6 +40,10 @@ public class Card {
     @JoinColumn(name = "account_id", nullable = false)
     public Account account;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    public Client client;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "pay_system_id", nullable = false)
     public PaySystem paySystem;

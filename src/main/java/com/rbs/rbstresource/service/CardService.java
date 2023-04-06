@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,29 +21,24 @@ import java.util.Objects;
 @Transactional(rollbackFor = {SQLException.class})
 public class CardService {
     private final CardRepository cardDAO;
-    private final AccountRepository accountDAO;
     private final StatusRepository statusDAO;
     private final ClientRepository clientDAO;
 
     @Autowired
-    public CardService(CardRepository cardDAO, AccountRepository accountDAO, StatusRepository statusDAO, ClientRepository clientDAO){
+    public CardService(CardRepository cardDAO, StatusRepository statusDAO, ClientRepository clientDAO){
         this.clientDAO = clientDAO;
-        this.accountDAO = accountDAO;
         this.cardDAO = cardDAO;
         this.statusDAO = statusDAO;
     }
 
-    public List<CardData> getCardList(Long userId, String code) throws SQLException {
+    public List<CardData> getCardList(Long userId, String code) {
         var client = clientDAO.findByUserId(userId);
-        var accounts = accountDAO.findAllByClient(client);
-        var account = accounts.stream().filter(a -> Objects.equals(a.getAccountNumber(), code)).findFirst().orElse(null);
-
-        if (account != null) {
-            var cards = cardDAO.findAllByAccount(account);
+        var cards = client.getCards();
+        if(cards != null) {
             return cards.stream().map(a -> new CardData(a.getId(), a.getCode(), a.getBalance(), a.getStatus().getStatusName(), a.getPaySystem().getType()))
                     .toList();
         } else {
-            throw new SQLException();
+            return new ArrayList<>();
         }
     }
 

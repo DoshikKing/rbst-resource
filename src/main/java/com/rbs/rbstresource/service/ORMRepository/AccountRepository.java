@@ -10,9 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    List<Account> findAllByClient(Client client);
+    Account findByClientAndAccountNumber(Client client, String accountNumber);
     Account findByAccountNumber(String account_number);
-    Account findByClientId(Long id);
     @Modifying
     @Query(value = "update Account u set u.balance = :balance where u.id = :id")
     void updateAccountSetBalanceForId(@Param("balance") float balance, @Param("id") Long id);

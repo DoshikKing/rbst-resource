@@ -2,6 +2,7 @@ package com.rbs.rbstresource.service;
 import com.rbs.rbstresource.component.Account;
 import com.rbs.rbstresource.component.Card;
 import com.rbs.rbstresource.component.Transaction;
+import com.rbs.rbstresource.exception.NotEnoughMoneyException;
 import com.rbs.rbstresource.payload.response.TransactionData;
 import com.rbs.rbstresource.service.ORMRepository.AccountRepository;
 import com.rbs.rbstresource.service.ORMRepository.CardRepository;
@@ -10,9 +11,11 @@ import com.rbs.rbstresource.service.ORMRepository.TransactionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -21,7 +24,7 @@ import java.sql.Date;
 
 @Service
 @Slf4j
-@Transactional(rollbackFor = {SQLException.class})
+@Transactional(rollbackFor = {SQLException.class}, isolation = Isolation.SERIALIZABLE)
 public class TransactionService {
     private final TransactionRepository transactionDAO;
     private final AccountRepository accountDAO;
@@ -30,10 +33,10 @@ public class TransactionService {
 
     @Autowired
     public TransactionService(TransactionRepository transactionDAO, AccountRepository accountDAO, CardRepository cardDAO, ClientRepository clientDAO){
-        this.transactionDAO = transactionDAO;
+        this.clientDAO = clientDAO;
         this.accountDAO = accountDAO;
         this.cardDAO = cardDAO;
-        this.clientDAO = clientDAO;
+        this.transactionDAO = transactionDAO;
     }
 
     public void makeTransferToCard(String debit, String credit, float amount, String debitBank, String creditBank, String comment) throws SQLException {
@@ -42,11 +45,14 @@ public class TransactionService {
             var toCard = cardDAO.findByCode(credit);
             var to = toCard.getAccount();
 
-            makeTransfer(from, to, null, toCard, amount, comment);
-
-            accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
-            accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
-            cardDAO.updateCardSetBalanceForId(toCard.getBalance() + (amount), toCard.getId());
+            if (from.getBalance() >= amount) {
+                makeTransfer(from, to, null, toCard, amount, comment);
+                accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
+                accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
+                cardDAO.updateCardSetBalanceForId(toCard.getBalance() + (amount), toCard.getId());
+            } else {
+                throw new NotEnoughMoneyException(from.getAccountNumber());
+            }
         }
     }
 
@@ -55,23 +61,40 @@ public class TransactionService {
             var from = accountDAO.findByAccountNumber(debit);
             var to = accountDAO.findByAccountNumber(credit);
 
-            makeTransfer(from, to, null, null, amount, comment);
-
-            accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
-            accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
+            if (from.getBalance() >= amount) {
+                makeTransfer(from, to, null, null, amount, comment);
+                accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
+                accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
+            } else {
+                throw new NotEnoughMoneyException(from.getAccountNumber());
+            }
         }
     }
 
-    public List<TransactionData> getCardTransactionsList(String code){
-        return transactionDAO.findAllByCard(cardDAO.findByCode(code)).stream()
-                .map(a -> new TransactionData(String.valueOf(a.getAmount()), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getCard().getCode()))
-                .toList();
+    public List<TransactionData> getCardTransactionsList(Long userId, String code)  {
+        var client = clientDAO.findByUserId(userId);
+        var card = cardDAO.findByClientAndCode(client ,code);
+        if (card != null)
+        {
+            return transactionDAO.findAllByCard(card).stream()
+            .map(a -> new TransactionData(String.valueOf(a.getAmount()), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getCard().getCode()))
+            .toList();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
-    public List<TransactionData> getAccountTransactionsList(String code){
-        return transactionDAO.findAllByAccount(accountDAO.findByAccountNumber(code)).stream()
-                .map(a -> new TransactionData(String.valueOf(a.getAmount()), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getAccount().getAccountNumber()))
-                .toList();
+    public List<TransactionData> getAccountTransactionsList(Long userId, String code) {
+        var client = clientDAO.findByUserId(userId);
+        var account = accountDAO.findByClientAndAccountNumber(client, code);
+        if (account != null)
+        {
+            return transactionDAO.findAllByAccount(account).stream()
+            .map(a -> new TransactionData(String.valueOf(a.getAmount()), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getAccount().getAccountNumber()))
+            .toList();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     private void makeTransfer(Account from, Account to, Card fromCard, Card toCard, float amount, String comment) throws SQLException {
