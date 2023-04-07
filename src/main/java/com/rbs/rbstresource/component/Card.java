@@ -3,7 +3,7 @@ package com.rbs.rbstresource.component;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
@@ -49,6 +49,6 @@ public class Card implements Serializable {
     @JoinColumn(name = "pay_system_id", nullable = false)
     public PaySystem paySystem;
 
-    @OneToMany(mappedBy = "bankCard", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Transaction> transactionsList;
 }
