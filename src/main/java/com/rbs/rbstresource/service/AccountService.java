@@ -1,20 +1,17 @@
 package com.rbs.rbstresource.service;
 
-import com.rbs.rbstresource.component.Client;
 import com.rbs.rbstresource.payload.response.AccountData;
-import com.rbs.rbstresource.service.ORMRepository.AccountRepository;
-import com.rbs.rbstresource.service.ORMRepository.ClientRepository;
-import com.rbs.rbstresource.service.ORMRepository.StatusRepository;
+import com.rbs.rbstresource.service.repository.AccountRepository;
+import com.rbs.rbstresource.service.repository.ClientRepository;
+import com.rbs.rbstresource.service.repository.StatusRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Slf4j

@@ -1,7 +1,7 @@
 package com.rbs.rbstresource.service;
 
 import com.rbs.rbstresource.component.Status;
-import com.rbs.rbstresource.service.ORMRepository.StatusRepository;
+import com.rbs.rbstresource.service.repository.StatusRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

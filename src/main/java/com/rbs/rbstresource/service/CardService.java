@@ -1,11 +1,9 @@
 package com.rbs.rbstresource.service;
 
-import com.rbs.rbstresource.component.Card;
 import com.rbs.rbstresource.payload.response.CardData;
-import com.rbs.rbstresource.service.ORMRepository.AccountRepository;
-import com.rbs.rbstresource.service.ORMRepository.CardRepository;
-import com.rbs.rbstresource.service.ORMRepository.ClientRepository;
-import com.rbs.rbstresource.service.ORMRepository.StatusRepository;
+import com.rbs.rbstresource.service.repository.CardRepository;
+import com.rbs.rbstresource.service.repository.ClientRepository;
+import com.rbs.rbstresource.service.repository.StatusRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Slf4j
@@ -31,7 +28,7 @@ public class CardService {
         this.statusDAO = statusDAO;
     }
 
-    public List<CardData> getCardList(Long userId, String code) {
+    public List<CardData> getCardList(Long userId) {
         var client = clientDAO.findByUserId(userId);
         var cards = client.getCards();
         if(cards != null) {

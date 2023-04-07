@@ -1,6 +1,6 @@
 package com.rbs.rbstresource.service;
 
-import com.rbs.rbstresource.service.ORMRepository.PaySystemRepository;
+import com.rbs.rbstresource.service.repository.PaySystemRepository;
 import com.rbs.rbstresource.component.PaySystem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

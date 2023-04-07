@@ -26,4 +26,7 @@ public class Status implements Serializable {
 
     @OneToMany(mappedBy = "status", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Card> cards;
+
+    @OneToMany(mappedBy = "status", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Billing> billings;
 }

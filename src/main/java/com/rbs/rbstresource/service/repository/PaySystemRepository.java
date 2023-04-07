@@ -1,4 +1,4 @@
-package com.rbs.rbstresource.service.ORMRepository;
+package com.rbs.rbstresource.service.repository;
 
 import com.rbs.rbstresource.component.PaySystem;
 import org.springframework.data.jpa.repository.JpaRepository;
