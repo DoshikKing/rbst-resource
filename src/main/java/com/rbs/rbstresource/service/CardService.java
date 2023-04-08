@@ -28,12 +28,12 @@ public class CardService {
         this.statusDAO = statusDAO;
     }
 
-    public List<CardData> getCardList(Long userId) {
+    public List<CardData> getCardList(String userId) {
         var client = clientDAO.findByUserId(userId);
         var cards = client.getCards();
         if(cards != null) {
             return cards.stream().map(a -> new CardData(a.getId(), a.getCode(), a.getBalance(), a.getStatus().getStatusName(), a.getPaySystem().getType()))
-                    .toList();
+            .toList();
         } else {
             return new ArrayList<>();
         }

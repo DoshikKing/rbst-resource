@@ -70,7 +70,7 @@ public class TransactionService {
         }
     }
 
-    public List<TransactionData> getCardTransactionsList(Long userId, String code)  {
+    public List<TransactionData> getCardTransactionsList(String userId, String code)  {
         var client = clientDAO.findByUserId(userId);
         var card = cardDAO.findByClientAndCode(client ,code);
         if (card != null)
@@ -83,7 +83,7 @@ public class TransactionService {
         }
     }
 
-    public List<TransactionData> getAccountTransactionsList(Long userId, String code) {
+    public List<TransactionData> getAccountTransactionsList(String userId, String code) {
         var client = clientDAO.findByUserId(userId);
         var account = accountDAO.findByClientAndAccountNumber(client, code);
         if (account != null)

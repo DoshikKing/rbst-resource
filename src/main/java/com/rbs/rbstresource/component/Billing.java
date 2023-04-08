@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Optional;
 
 @Entity
 @Table(name = "billing")
@@ -28,4 +29,15 @@ public class Billing implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id", nullable = false)
     public Status status;
+
+    public Billing(String billingName, String comment, Status status, Optional<Client> client) {
+        this.setBillingName(billingName);
+        this.setComment(comment);
+        this.setStatus(status);
+        this.setClient(client.stream().findFirst().orElse(null));
+    }
+
+    public Billing() {
+
+    }
 }

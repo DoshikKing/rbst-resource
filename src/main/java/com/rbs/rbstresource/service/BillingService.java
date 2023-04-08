@@ -1,5 +1,8 @@
 package com.rbs.rbstresource.service;
 
+import com.rbs.rbstresource.component.Billing;
+import com.rbs.rbstresource.component.Status;
+import com.rbs.rbstresource.payload.request.BillingRBSData;
 import com.rbs.rbstresource.payload.response.BillingData;
 import com.rbs.rbstresource.service.repository.BillingRepository;
 import com.rbs.rbstresource.service.repository.CardRepository;
@@ -20,13 +23,17 @@ import java.util.List;
 public class BillingService {
 
     private final ClientRepository clientDAO;
+    private final BillingRepository billingDAO;
+    private final StatusRepository statusDAO;
 
     @Autowired
-    public BillingService(ClientRepository clientDAO){
+    public BillingService(ClientRepository clientDAO, BillingRepository billingDAO, StatusRepository statusDAO){
         this.clientDAO = clientDAO;
+        this.billingDAO = billingDAO;
+        this.statusDAO = statusDAO;
     }
 
-    public List<BillingData> getBillingList(Long userId) {
+    public List<BillingData> getBillingList(String userId) {
         var client = clientDAO.findByUserId(userId);
         var billings = client.getBillings();
 
@@ -36,5 +43,11 @@ public class BillingService {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public void saveBill(BillingRBSData billing) throws SQLException{
+        var client = clientDAO.findById(billing.getClientId());
+        var status = statusDAO.findByStatusName(billing.getStatus());
+        billingDAO.save(new Billing(billing.getBillingName(), billing.getComment(), status, client));
     }
 }

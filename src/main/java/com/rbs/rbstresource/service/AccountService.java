@@ -28,7 +28,7 @@ public class AccountService {
         this.statusDAO = statusDAO;
     }
 
-    public List<AccountData> getAccountList(Long userId) {
+    public List<AccountData> getAccountList(String userId) {
         var client = clientDAO.findByUserId(userId);
         var accounts = client.getAccounts();
         if(accounts != null) {

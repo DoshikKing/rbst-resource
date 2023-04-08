@@ -29,7 +29,7 @@ public class Client implements Serializable {
 //    private boolean isActivated;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private String userId;
 
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public List<Account> accounts;
