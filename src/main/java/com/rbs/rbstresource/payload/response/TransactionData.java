@@ -8,7 +8,6 @@ import java.sql.Date;
 @Data
 @AllArgsConstructor
 public class TransactionData {
-
     private String comment;
     private float amount;
     private Boolean isDebit;

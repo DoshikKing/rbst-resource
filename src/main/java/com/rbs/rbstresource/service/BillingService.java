@@ -1,11 +1,9 @@
 package com.rbs.rbstresource.service;
 
 import com.rbs.rbstresource.component.Billing;
-import com.rbs.rbstresource.component.Status;
-import com.rbs.rbstresource.payload.request.BillingRBSData;
+import com.rbs.rbstresource.payload.request.ABSBillingData;
 import com.rbs.rbstresource.payload.response.BillingData;
 import com.rbs.rbstresource.service.repository.BillingRepository;
-import com.rbs.rbstresource.service.repository.CardRepository;
 import com.rbs.rbstresource.service.repository.ClientRepository;
 import com.rbs.rbstresource.service.repository.StatusRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -45,9 +44,20 @@ public class BillingService {
         }
     }
 
-    public void saveBill(BillingRBSData billing) throws SQLException{
-        var client = clientDAO.findById(billing.getClientId());
-        var status = statusDAO.findByStatusName(billing.getStatus());
-        billingDAO.save(new Billing(billing.getBillingName(), billing.getComment(), status, client));
+    public void updateBill(ABSBillingData new_bill_data) throws SQLException {
+        var client = clientDAO.getReferenceById(new_bill_data.getClientId());
+        var status = statusDAO.findByStatusName(new_bill_data.getStatus());
+        var bill = billingDAO.getReferenceById(new_bill_data.getId());
+        bill.setBillingName(new_bill_data.getBillingName());
+        bill.setComment(new_bill_data.getComment());
+        bill.setClient(client);
+        bill.setStatus(status);
+        billingDAO.save(bill);
+    }
+
+    public void saveBill(ABSBillingData bill) throws SQLException {
+        var client = clientDAO.getReferenceById(bill.getClientId());
+        var status = statusDAO.findByStatusName(bill.getStatus());
+        billingDAO.save(new Billing(bill.getBillingName(), bill.getComment(), status, Optional.of(client)));
     }
 }

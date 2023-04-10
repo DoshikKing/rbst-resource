@@ -5,11 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class BillingRBSData {
-    private String billingName;
-    private String comment;
-
+public class ABSClientData {
+    private Long id;
+    private String clientName;
+    private String userId;
     public String status;
-
-    public Long clientId;
 }

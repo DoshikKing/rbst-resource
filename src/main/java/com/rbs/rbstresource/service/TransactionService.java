@@ -23,7 +23,7 @@ import java.sql.Date;
 
 @Service
 @Slf4j
-@Transactional(rollbackFor = {SQLException.class}, isolation = Isolation.SERIALIZABLE)
+@Transactional(rollbackFor = {NotEnoughMoneyException.class, SQLException.class}, isolation = Isolation.SERIALIZABLE)
 public class TransactionService {
     private final TransactionRepository transactionDAO;
     private final AccountRepository accountDAO;
@@ -38,9 +38,10 @@ public class TransactionService {
         this.transactionDAO = transactionDAO;
     }
 
-    public void makeTransferToCard(String debit, String credit, float amount, String debitBank, String creditBank, String comment) throws SQLException {
+    public void makeTransferToCard(String debit, String credit, float amount, String debitBank, String creditBank, String comment, String userId) throws NotEnoughMoneyException, SQLException {
+        var client = clientDAO.findByUserId(userId);
         if(creditBank.equals(debitBank)){
-            var from = accountDAO.findByAccountNumber(debit);
+            var from = accountDAO.findByClientAndAccountNumber(client, debit);
             var toCard = cardDAO.findByCode(credit);
             var to = toCard.getAccount();
 
@@ -55,9 +56,10 @@ public class TransactionService {
         }
     }
 
-    public void makeTransferToAccount(String debit, String credit, float amount, String debitBank, String creditBank, String comment) throws SQLException {
+    public void makeTransferToAccount(String debit, String credit, float amount, String debitBank, String creditBank, String comment, String userId) throws NotEnoughMoneyException, SQLException {
+        var client = clientDAO.findByUserId(userId);
         if(creditBank.equals(debitBank)){
-            var from = accountDAO.findByAccountNumber(debit);
+            var from = accountDAO.findByClientAndAccountNumber(client, debit);
             var to = accountDAO.findByAccountNumber(credit);
 
             if (from.getBalance() >= amount) {
@@ -96,7 +98,7 @@ public class TransactionService {
         }
     }
 
-    private void makeTransfer(Account from, Account to, Card fromCard, Card toCard, float amount, String comment) throws SQLException {
+    private void makeTransfer(Account from, Account to, Card fromCard, Card toCard, float amount, String comment) {
         java.util.Date time = new java.util.Date();
         Date date = new Date(time.getTime());
         String uuid = UUID.randomUUID().toString();

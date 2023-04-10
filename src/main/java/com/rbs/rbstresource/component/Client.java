@@ -19,15 +19,6 @@ public class Client implements Serializable {
     @Column(name = "client_name", nullable = false)
     private String clientName;
 
-//    @Column(name = "birthday", nullable = false)
-//    private Date birthday;
-//
-//    @Column(name = "address", nullable = false)
-//    private String address;
-//
-//    @Column(name = "is_activated")
-//    private boolean isActivated;
-
     @Column(name = "user_id", nullable = false)
     private String userId;
 

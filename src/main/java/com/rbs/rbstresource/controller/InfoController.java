@@ -17,29 +17,29 @@ import java.util.List;
 @Slf4j
 @RestController
 public class InfoController {
-
-
     private final CardService cardService;
-
     private final AccountService accountService;
+    private String userId;
 
     @Autowired
-    InfoController(AccountService accountService, CardService cardService){
+    InfoController(AccountService accountService, CardService cardService) {
         this.accountService = accountService;
         this.cardService = cardService;
     }
 
     @GetMapping("get/cards")
-    @RolesAllowed("User")
+    @RolesAllowed("ROLE_User")
     public ResponseEntity<Object> getCards(JwtAuthenticationToken authentication) {
-        var userId = authentication.getTokenAttributes().get("sub").toString();
+        this.userId = authentication.getTokenAttributes().get("sub").toString();
+        log.info("Retrieving info about cards for user : {}", userId.substring(0, userId.length() - 5) + "*****");
         return new ResponseEntity<>(cardService.getCardList(userId), HttpStatus.OK);
     }
 
     @GetMapping("get/accounts")
-    @RolesAllowed("User")
+    @RolesAllowed("ROLE_User")
     public ResponseEntity<Object> getAccounts(JwtAuthenticationToken authentication) {
-        var userId = authentication.getTokenAttributes().get("sub").toString();
+        this.userId = authentication.getTokenAttributes().get("sub").toString();
+        log.info("Retrieving info about accounts for user : {}", userId.substring(0, userId.length() - 5) + "*****");
         return new ResponseEntity<>(accountService.getAccountList(userId), HttpStatus.OK);
     }
 
