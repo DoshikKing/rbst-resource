@@ -26,7 +26,7 @@ public class ClientService {
     }
 
     public void updateClientById(ABSClientData absClientData) throws SQLException {
-        var client = clientDAO.getReferenceById(absClientData.getId());
+        var client = clientDAO.findByUserId(absClientData.getUserId());
         client.setClientName(absClientData.getClientName());
         client.setUserId(absClientData.getUserId());
         client.setStatus(statusDAO.findByStatusName(absClientData.getStatus()));

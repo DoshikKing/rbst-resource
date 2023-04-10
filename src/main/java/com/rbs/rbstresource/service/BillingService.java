@@ -47,7 +47,7 @@ public class BillingService {
     public void updateBill(ABSBillingData new_bill_data) throws SQLException {
         var client = clientDAO.getReferenceById(new_bill_data.getClientId());
         var status = statusDAO.findByStatusName(new_bill_data.getStatus());
-        var bill = billingDAO.getReferenceById(new_bill_data.getId());
+        var bill = billingDAO.findByClient(client);
         bill.setBillingName(new_bill_data.getBillingName());
         bill.setComment(new_bill_data.getComment());
         bill.setClient(client);

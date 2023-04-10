@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ABSClientData {
-    private Long id;
     private String clientName;
     private String userId;
     public String status;

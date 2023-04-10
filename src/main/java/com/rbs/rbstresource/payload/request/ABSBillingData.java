@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ABSBillingData {
-    private Long id;
     private String billingName;
     private String comment;
 
