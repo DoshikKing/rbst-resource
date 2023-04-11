@@ -38,7 +38,7 @@ public class CardService {
         var client = clientDAO.findByUserId(userId);
         var cards = client.getCards();
         if(cards != null) {
-            return cards.stream().map(a -> new CardData(a.getId(), a.getCode(), a.getBalance(), a.getStatus().getStatusName(), a.getPaySystem().getType()))
+            return cards.stream().map(a -> new CardData(a.getId(), a.getAccount().getId(), a.getCode(), a.getBalance(), a.getStatus().getStatusName(), a.getPaySystem().getType()))
             .toList();
         } else {
             return new ArrayList<>();

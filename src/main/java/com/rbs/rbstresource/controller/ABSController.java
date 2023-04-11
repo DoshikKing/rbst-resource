@@ -109,7 +109,7 @@ public class ABSController {
         }
     }
 
-    @PostMapping("update/account")
+    @PostMapping("update/card")
     @RolesAllowed("ROLE_ABS")
     public ResponseEntity<Object> updateCard(@Valid @RequestBody ABSCardData absCardData) {
         try {
@@ -121,7 +121,7 @@ public class ABSController {
         }
     }
 
-    @PutMapping("insert/account")
+    @PutMapping("insert/card")
     @RolesAllowed("ROLE_ABS")
     public ResponseEntity<Object> insertCard(@Valid @RequestBody ABSCardData absCardData) {
         try {

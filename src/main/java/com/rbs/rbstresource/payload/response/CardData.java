@@ -7,8 +7,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class CardData {
     private Long id;
+    private Long accountId;
     private String code;
-    private float amount;
+    private float balance;
     private String status;
     private String paySystem;
 }
