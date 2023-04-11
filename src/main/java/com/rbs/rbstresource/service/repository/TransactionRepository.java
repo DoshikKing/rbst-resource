@@ -11,7 +11,4 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findAllByAccount(Account account);
     List<Transaction> findAllByCard(Card code);
-    Transaction findByTransactionGroup(String transaction_group);
-    Transaction findByAccountId(Long id);
-    Transaction findByCardId(Long id);
 }
