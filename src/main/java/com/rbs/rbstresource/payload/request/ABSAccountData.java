@@ -6,7 +6,6 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-@AllArgsConstructor
 public class ABSAccountData {
     private String accountNumber;
     private String accountName;

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
+    Card findByClientAndId(Client cLient, Long id);
     Card findByClientAndCode(Client client, String code);
     Card findByCode(String code);
     @Modifying

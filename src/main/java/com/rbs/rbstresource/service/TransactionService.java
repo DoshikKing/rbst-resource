@@ -72,26 +72,26 @@ public class TransactionService {
         }
     }
 
-    public List<TransactionData> getCardTransactionsList(String userId, String code)  {
+    public List<TransactionData> getCardTransactionsList(String userId, Long id)  {
         var client = clientDAO.findByUserId(userId);
-        var card = cardDAO.findByClientAndCode(client ,code);
+        var card = cardDAO.findByClientAndId(client ,id);
         if (card != null)
         {
             return transactionDAO.findAllByCard(card).stream()
-            .map(a -> new TransactionData(String.valueOf(a.getAmount()), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getCard().getCode()))
+            .map(a -> new TransactionData(a.getComment(), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getCard().getCode()))
             .toList();
         } else {
             return new ArrayList<>();
         }
     }
 
-    public List<TransactionData> getAccountTransactionsList(String userId, String code) {
+    public List<TransactionData> getAccountTransactionsList(String userId, Long id) {
         var client = clientDAO.findByUserId(userId);
-        var account = accountDAO.findByClientAndAccountNumber(client, code);
+        var account = accountDAO.findByClientAndId(client, id);
         if (account != null)
         {
             return transactionDAO.findAllByAccount(account).stream()
-            .map(a -> new TransactionData(String.valueOf(a.getAmount()), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getAccount().getAccountNumber()))
+            .map(a -> new TransactionData(a.getComment(), a.getAmount(), a.getIsDebit(), a.getTransactionTime(), a.getAccount().getAccountNumber()))
             .toList();
         } else {
             return new ArrayList<>();
@@ -103,28 +103,30 @@ public class TransactionService {
         Date date = new Date(time.getTime());
         String uuid = UUID.randomUUID().toString();
 
-        Transaction transaction = new Transaction();
+        Transaction transaction_debit = new Transaction();
 
-        transaction.setCard(fromCard);
-        transaction.setAccount(from);
-        transaction.setAmount(amount);
-        transaction.setComment(comment);
-        transaction.setIsDebit(true);
-        transaction.setTransactionTime(date);
-        transaction.setTransactionGroup(uuid);
-        transaction.setStatus("commit");
+        Transaction transaction_credit = new Transaction();
 
-        transactionDAO.save(transaction);
+        //transaction.setCard(fromCard);
+        transaction_debit.setAccount(from);
+        transaction_debit.setAmount(amount);
+        transaction_debit.setComment(comment);
+        transaction_debit.setIsDebit(true);
+        transaction_debit.setTransactionTime(date);
+        transaction_debit.setTransactionGroup(uuid);
+        transaction_debit.setStatus("commit");
 
-        transaction.setCard(toCard);
-        transaction.setAccount(to);
-        transaction.setAmount(amount);
-        transaction.setComment(comment);
-        transaction.setIsDebit(false);
-        transaction.setTransactionTime(date);
-        transaction.setTransactionGroup(uuid);
-        transaction.setStatus("commit");
+        transactionDAO.save(transaction_debit);
 
-        transactionDAO.save(transaction);
+        transaction_credit.setCard(toCard);
+        transaction_credit.setAccount(to);
+        transaction_credit.setAmount(amount);
+        transaction_credit.setComment(comment);
+        transaction_credit.setIsDebit(false);
+        transaction_credit.setTransactionTime(date);
+        transaction_credit.setTransactionGroup(uuid);
+        transaction_credit.setStatus("commit");
+
+        transactionDAO.save(transaction_credit);
     }
 }

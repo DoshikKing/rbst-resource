@@ -27,15 +27,15 @@ public class AbstractController {
 
     @PostMapping("get/card/abstract")
     @RolesAllowed("ROLE_User")
-    public ResponseEntity<Object> getCardAbstractByCardCode(JwtAuthenticationToken authentication, @Valid @RequestBody AbstractData abstractData) {
+    public ResponseEntity<Object> getCardAbstractByCardCode(JwtAuthenticationToken authentication, @RequestBody AbstractData abstractData) {
         this.userId = authentication.getTokenAttributes().get("sub").toString();
-        return new ResponseEntity<>(transactionService.getCardTransactionsList(userId, abstractData.getCode()), HttpStatus.OK);
+        return new ResponseEntity<>(transactionService.getCardTransactionsList(userId, abstractData.getId()), HttpStatus.OK);
     }
 
     @PostMapping("get/account/abstract")
     @RolesAllowed("ROLE_User")
-    public ResponseEntity<Object> getAccountAbstractByAccountNumber(JwtAuthenticationToken authentication, @Valid @RequestBody AbstractData abstractData) {
+    public ResponseEntity<Object> getAccountAbstractByAccountNumber(JwtAuthenticationToken authentication, @RequestBody AbstractData abstractData) {
         this.userId = authentication.getTokenAttributes().get("sub").toString();
-        return new ResponseEntity<>(transactionService.getAccountTransactionsList(userId, abstractData.getCode()), HttpStatus.OK);
+        return new ResponseEntity<>(transactionService.getAccountTransactionsList(userId, abstractData.getId()), HttpStatus.OK);
     }
 }

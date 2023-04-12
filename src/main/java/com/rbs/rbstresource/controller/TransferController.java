@@ -29,7 +29,7 @@ public class TransferController {
 
     @PostMapping("/transfer/from/account/to/card")
     @RolesAllowed("ROLE_User")
-    public ResponseEntity<Object> makeTransferFromAccountToCard(JwtAuthenticationToken authentication, @Valid @RequestBody TransferData transferData) {
+    public ResponseEntity<Object> makeTransferFromAccountToCard(JwtAuthenticationToken authentication, @RequestBody TransferData transferData) {
         this.userId = authentication.getTokenAttributes().get("sub").toString();
             try {
                 transactionService.makeTransferToCard(transferData.getDebit(), transferData.getCredit(), transferData.getAmount(), transferData.getDebitBank(), transferData.getCreditBank(), transferData.getComment(), userId);
@@ -46,7 +46,7 @@ public class TransferController {
 
     @PostMapping("/transfer/from/account/to/account")
     @RolesAllowed("ROLE_User")
-    public ResponseEntity<Object> makeTransferFromAccountToAccount(JwtAuthenticationToken authentication, @Valid @RequestBody TransferData transferData) {
+    public ResponseEntity<Object> makeTransferFromAccountToAccount(JwtAuthenticationToken authentication, @RequestBody TransferData transferData) {
         this.userId = authentication.getTokenAttributes().get("sub").toString();
             try {
                 transactionService.makeTransferToAccount(transferData.getDebit(), transferData.getCredit(), transferData.getAmount(), transferData.getDebitBank(), transferData.getCreditBank(), transferData.getComment(), userId);

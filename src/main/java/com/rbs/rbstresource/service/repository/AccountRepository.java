@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
+    Account findByClientAndId(Client client, Long id);
     Account findByClientAndAccountNumber(Client client, String accountNumber);
     Account findByAccountNumber(String account_number);
     @Modifying

@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
-@Table(name = "card_transaction")
+@Table(name = "transaction")
 @Getter
 @Setter
 public class Transaction implements Serializable {
@@ -38,7 +38,7 @@ public class Transaction implements Serializable {
     @JoinColumn(name = "account_id", nullable = false)
     public Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
     public Card card;
 }

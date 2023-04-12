@@ -7,7 +7,6 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-@AllArgsConstructor
 public class ABSCardData {
     private String code;
     private float balance;
