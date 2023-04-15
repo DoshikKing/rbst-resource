@@ -22,6 +22,9 @@ public class Billing implements Serializable {
     @Column(name = "billing_comment", nullable = false)
     private String comment;
 
+    @Column(name = "amount",nullable = false, precision = 2)
+    private float amount;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
     public Client client;
@@ -30,10 +33,11 @@ public class Billing implements Serializable {
     @JoinColumn(name = "status_id", nullable = false)
     public Status status;
 
-    public Billing(String billingName, String comment, Status status, Optional<Client> client) {
+    public Billing(String billingName, String comment, Status status, Optional<Client> client, float amount) {
         this.setBillingName(billingName);
         this.setComment(comment);
         this.setStatus(status);
+        this.setAmount(amount);
         this.setClient(client.stream().findFirst().orElse(null));
     }
 

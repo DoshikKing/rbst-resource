@@ -9,5 +9,6 @@ public class ABSBillingData {
     private String comment;
 
     public String status;
+    private float amount;
     public Long clientId;
 }

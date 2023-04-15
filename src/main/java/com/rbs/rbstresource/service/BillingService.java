@@ -37,7 +37,7 @@ public class BillingService {
         var billings = client.getBillings();
 
         if(billings != null) {
-            return billings.stream().map(a -> new BillingData(a.getId(), a.getBillingName(), a.getComment(), a.getStatus().getStatusName()))
+            return billings.stream().map(bill -> new BillingData(bill.getId(), bill.getBillingName(), bill.getComment(), bill.getStatus().getStatusName(), bill.getAmount()))
             .toList();
         } else {
             return new ArrayList<>();
@@ -52,12 +52,13 @@ public class BillingService {
         bill.setComment(new_bill_data.getComment());
         bill.setClient(client);
         bill.setStatus(status);
+        bill.setAmount(new_bill_data.getAmount());
         billingDAO.save(bill);
     }
 
     public void saveBill(ABSBillingData bill) throws SQLException {
         var client = clientDAO.getReferenceById(bill.getClientId());
         var status = statusDAO.findByStatusName(bill.getStatus());
-        billingDAO.save(new Billing(bill.getBillingName(), bill.getComment(), status, Optional.of(client)));
+        billingDAO.save(new Billing(bill.getBillingName(), bill.getComment(), status, Optional.of(client), bill.getAmount()));
     }
 }

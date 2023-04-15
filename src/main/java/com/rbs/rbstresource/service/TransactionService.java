@@ -2,6 +2,9 @@ package com.rbs.rbstresource.service;
 import com.rbs.rbstresource.component.Account;
 import com.rbs.rbstresource.component.Card;
 import com.rbs.rbstresource.component.Transaction;
+import com.rbs.rbstresource.exception.BadAccountAccountReferenceException;
+import com.rbs.rbstresource.exception.BadCardAccountReferenceException;
+import com.rbs.rbstresource.exception.BadCardCardReferenceException;
 import com.rbs.rbstresource.exception.NotEnoughMoneyException;
 import com.rbs.rbstresource.payload.response.TransactionData;
 import com.rbs.rbstresource.service.repository.AccountRepository;
@@ -38,17 +41,25 @@ public class TransactionService {
         this.transactionDAO = transactionDAO;
     }
 
-    public void makeTransferToCard(String debit, String credit, float amount, String debitBank, String creditBank, String comment, String userId) throws NotEnoughMoneyException, SQLException {
+    public void makeTransferFromAccountToCard(Long debit, Long credit, float amount, String debitBank, String creditBank, String comment, String userId) throws NotEnoughMoneyException, SQLException, BadAccountAccountReferenceException {
         var client = clientDAO.findByUserId(userId);
         if(creditBank.equals(debitBank)){
-            var from = accountDAO.findByClientAndAccountNumber(client, debit);
-            var toCard = cardDAO.findByCode(credit);
+            var from = accountDAO.findByClientAndId(client, debit);
+            var fromListOfCards = from.getCards();
+
+            var toCard = cardDAO.findByClientAndId(client, credit);
             var to = toCard.getAccount();
+
+            if (from.equals(to)){
+                throw new BadAccountAccountReferenceException(from.getAccountNumber());
+            }
 
             if (from.getBalance() >= amount) {
                 makeTransfer(from, to, null, toCard, amount, comment);
                 accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
                 accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
+                from.getCards().forEach(card -> card.setBalance(card.getBalance() - (amount)));
+                cardDAO.saveAll(fromListOfCards);
                 cardDAO.updateCardSetBalanceForId(toCard.getBalance() + (amount), toCard.getId());
             } else {
                 throw new NotEnoughMoneyException(from.getAccountNumber());
@@ -56,16 +67,78 @@ public class TransactionService {
         }
     }
 
-    public void makeTransferToAccount(String debit, String credit, float amount, String debitBank, String creditBank, String comment, String userId) throws NotEnoughMoneyException, SQLException {
+    public void makeTransferFromAccountToAccount(Long debit, Long credit, float amount, String debitBank, String creditBank, String comment, String userId) throws NotEnoughMoneyException, BadAccountAccountReferenceException, SQLException {
         var client = clientDAO.findByUserId(userId);
         if(creditBank.equals(debitBank)){
-            var from = accountDAO.findByClientAndAccountNumber(client, debit);
-            var to = accountDAO.findByAccountNumber(credit);
+            var from = accountDAO.findByClientAndId(client, debit);
+            var fromListOfCards = from.getCards();
+            var to = accountDAO.findByClientAndId(client, credit);
+            var toListOfCards = to.getCards();
+
+            if (from.equals(to)){
+                throw new BadAccountAccountReferenceException(to.getAccountNumber());
+            }
 
             if (from.getBalance() >= amount) {
                 makeTransfer(from, to, null, null, amount, comment);
                 accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
                 accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
+                from.getCards().forEach(card -> card.setBalance(card.getBalance() - (amount)));
+                cardDAO.saveAll(fromListOfCards);
+                to.getCards().forEach(card -> card.setBalance(card.getBalance() + (amount)));
+                cardDAO.saveAll(toListOfCards);
+            } else {
+                throw new NotEnoughMoneyException(from.getAccountNumber());
+            }
+        }
+    }
+
+    public void makeTransferFromCardToCard(Long debit, Long credit, float amount, String debitBank, String creditBank, String comment, String userId) throws NotEnoughMoneyException, SQLException, BadCardCardReferenceException {
+        var client = clientDAO.findByUserId(userId);
+        if(creditBank.equals(debitBank)){
+            var toCard = cardDAO.findByClientAndId(client, credit);
+            var fromCard = cardDAO.findByClientAndId(client, debit);
+            var to = toCard.getAccount();
+            var from = fromCard.getAccount();
+
+            if (from.equals(to)){
+                if (fromCard.equals(toCard)) {
+                    throw new BadCardCardReferenceException(toCard.getCode());
+                }
+                throw new BadAccountAccountReferenceException(from.getAccountNumber());
+            }
+
+            if (from.getBalance() >= amount && fromCard.getBalance() >= amount) {
+                makeTransfer(from, to, fromCard, toCard, amount, comment);
+                accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
+                accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
+                cardDAO.updateCardSetBalanceForId(fromCard.getBalance() - (amount), toCard.getId());
+                cardDAO.updateCardSetBalanceForId(toCard.getBalance() + (amount), toCard.getId());
+            } else {
+                throw new NotEnoughMoneyException(from.getAccountNumber());
+            }
+        }
+    }
+
+    public void makeTransferFromCardToAccount(Long debit, Long credit, float amount, String debitBank, String creditBank, String comment, String userId) throws NotEnoughMoneyException, BadAccountAccountReferenceException, SQLException {
+        var client = clientDAO.findByUserId(userId);
+        if(creditBank.equals(debitBank)){
+            var fromCard = cardDAO.findByClientAndId(client, debit);
+            var from = fromCard.getAccount();
+            var to = accountDAO.getReferenceById(credit);
+            var toListOfCards = to.getCards();
+
+            if (from.equals(to)){
+                throw new BadAccountAccountReferenceException(to.getAccountNumber());
+            }
+
+            if (from.getBalance() >= amount) {
+                makeTransfer(from, to, fromCard, null, amount, comment);
+                cardDAO.updateCardSetBalanceForId(fromCard.getBalance() - (amount), fromCard.getId());
+                accountDAO.updateAccountSetBalanceForId(from.getBalance() - (amount), from.getId());
+                accountDAO.updateAccountSetBalanceForId(to.getBalance() + (amount), to.getId());
+                to.getCards().forEach(card -> card.setBalance(card.getBalance() + (amount)));
+                cardDAO.saveAll(toListOfCards);
             } else {
                 throw new NotEnoughMoneyException(from.getAccountNumber());
             }

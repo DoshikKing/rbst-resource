@@ -11,4 +11,5 @@ public class BillingData {
     private String comment;
 
     public String status;
+    private float amount;
 }

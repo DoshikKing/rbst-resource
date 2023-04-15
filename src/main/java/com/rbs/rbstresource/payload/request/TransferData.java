@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class TransferData {
-    String debit;
-    String credit;
+    Long debit;
+    Long credit;
     float amount;
     String debitBank;
     String creditBank;
