@@ -3,7 +3,6 @@ import com.rbs.rbstresource.component.Account;
 import com.rbs.rbstresource.component.Card;
 import com.rbs.rbstresource.component.Transaction;
 import com.rbs.rbstresource.exception.BadAccountAccountReferenceException;
-import com.rbs.rbstresource.exception.BadCardAccountReferenceException;
 import com.rbs.rbstresource.exception.BadCardCardReferenceException;
 import com.rbs.rbstresource.exception.NotEnoughMoneyException;
 import com.rbs.rbstresource.payload.response.TransactionData;
